@@ -1,0 +1,18 @@
+Header:
+(tourjours les meme champs sur tout les messages)
+
+Body:
+(le champs peut changer)
+ex => prix, quantité, ID
+
+
+footer: 
+(tourjours les meme champs sur tout les messages)
+ex => champ checksomme
+
+
+
+message de modification : cancel request (qq chose comme ca)
+
+
+faire des reponse du serveur (aknolegment);

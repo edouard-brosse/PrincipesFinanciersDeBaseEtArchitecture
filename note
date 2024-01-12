@@ -1,0 +1,38 @@
+[[client ID][quantité][Prix]]
+[[vendeur][quantité][prix]]
+
+
+[[NB client[client ID]][quantité total][Prix]]
+[[NB vendeur[vendeur ID]][quantité total][Prix]]
+
+
+
+int * [[client ID][quantité][prix]];
+int * [[vendeur ID][quantité][prix]];
+
+int *[[nb client][quantité][prix]]; 
+// metre tout les client qui on le mm prix sur la mm ligne 
+//faire un sort en fonction du prix du plus grand au plus petit
+
+int *[[nb client][quantité][prix]];
+// metre tout les client qui on le meme prix 
+//faire un sort en fonction du prix du plus petit au plus grand
+
+//si le prix d'un acheteur >= a celui d'un vendeur achette au prix le plus bas
+
+
+exercice 1: implementation de l'order book
+- ajout de d'order
+- modification d'ordre
+- cancel d'ordre
+- execution total
+- execution partielle
+- unit tests
+
+exercice 2: fix protocol
+- desing du protocol 
+- document detaillant quels messages sont utilisés
+- document
+
+exo 3: réseau
+
