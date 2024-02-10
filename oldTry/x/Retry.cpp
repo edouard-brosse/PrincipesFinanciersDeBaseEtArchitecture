@@ -6,10 +6,10 @@
 class OrderBook {
     public:
         struct Order {
-            int clientID;
-            int quantity;
-            int price;
-            int ID;
+            int clientID; // l'ID du client
+            int quantity;  // la quantité d'actions à acheter ou vendre
+            int price; // le prix voulu auquel acheter ou vendre
+            int ID; // Unique ID, ID of the order
             int category; // 0 pour achat, 1 pour vente
             Order(int id, int qty, int prc, int myID, int Category) : clientID(id), quantity(qty), price(prc), ID(myID), category(Category) {}
         };
@@ -56,86 +56,70 @@ class OrderBook {
     }
 
     void manageSellMarcket() {
+        mergeOrders();
         if (buyOrders.empty() || achatList.empty() || venteList.empty()) {
             return;
         }
-        std::cout << "======================== |PASSE |===============\n";
+        std::cout << "======================== |Manage Marcket |===============\n";
 
         for (int y = 0; y < achatList.size(); y ++) {
             if(venteList.empty())
                 break;
            if (achatList[y].price >= venteList[0].price){
-                if (achatList[y].quantity < venteList[0].quantity) {
-                    std::cout << "=== | achat < vente |===\n";
-                    std::cout << "ACHAT de : " <<  achatList[y].quantity << "\t au prix de " << venteList[0].price << " achat ID " << achatList[y].clientID << " vente ID: " << venteList[0].clientID <<"\n\n";
-                    //venteList[0].quantity -= achatList[y].quantity;
-                    BuyInvoice(achatList[y].quantity , venteList[0].price);
-                    SellInvoice(achatList[y].quantity , venteList[0].price);
-                } else if (achatList[y].quantity == venteList[0].quantity) {
-                    std::cout << "=== | achat == vente |===\n";
-                    std::cout << "ACHAT de : " << achatList[y].quantity << "\t au prix de " << venteList[0].price << " achat ID " << achatList[y].clientID << " vente ID: " << venteList[0].ID  << "\n\n";
-                    //venteList[0].quantity -= achatList[y].quantity;
-                    BuyInvoice(venteList[0].quantity, venteList[0].price);
-                    SellInvoice(venteList[0].quantity, venteList[0].price);
-                } else if (achatList[y].quantity > venteList[0].quantity) {
-                    std::cout << "=== | achat > vente |===\n";
-                    std::cout << "ACHAT de : " << venteList[0].quantity << "\t au prix de " << venteList[0].price << " achat ID " << achatList[y].clientID << " vente ID: " << venteList[0].ID << "\n\n";
-                    std::cout << "nb vente : " << venteList[0].quantity << " nb achat "<< achatList[y].quantity << " Result : " << (achatList[y].quantity - venteList[0].quantity) << "\n";
-                    BuyInvoice(venteList[0].quantity, venteList[0].price);
-                    SellInvoice(venteList[0].quantity, venteList[0].price);
-                }
+              BuyCallcul();
+              manageSellMarcket();
             }
         }
     } 
 
-    
-    void BuyInvoice(int dif, int cost){
-        std::cout << "---|buy INVOICE "<< dif << "|---\n";
-        for (int size; size < buyOrders.size(); size ++) {
-            if (buyOrders[size].category == 0 && buyOrders[size].price >= cost){
-                if(dif >= buyOrders[size].quantity){
-                    std::cout << " Client ID " << buyOrders[size].clientID << " a acheter " << buyOrders[size].quantity << "\n";
-                    std::cout << "sdif :: " << buyOrders[size].quantity - dif<< "\n";
-                    dif = buyOrders[size].quantity - dif;
-                    removeBuyOrder(buyOrders[size].ID);
-                }else{
-                    std::cout << " Client ID " << buyOrders[size].clientID << " a acheter " << cost << "\n";
-                    std::cout << "sdif :: " << dif - buyOrders[size].quantity;
-                    dif = dif - buyOrders[size].quantity;
-                    buyOrders[size].quantity -= size;
-                }
-            } else {
-                if(buyOrders[size].price == cost){
-                    std::cout << "ICI ERROR PASSE  Category :: " << buyOrders[size].category <<"\n";
-                }
-            }
-            if(cost <= 0)
+    void BuyCallcul(){
+        int disponible = venteList[0].quantity;
+        std::cout << "======================== |Buy Calcul |===============\n";
+        for (int i = 0; i < buyOrders.size(); i++){
+            if(disponible < 1)
                 break;
+            if(buyOrders[i].price >= venteList[0].price && buyOrders[i].category == 0){
+                if(buyOrders[i].quantity > disponible) {
+                    std::cout << "Client ID (Achat 1): " << buyOrders[i].clientID << ", Quantite: " << buyOrders[i].quantity << ", Prix: " << buyOrders[i].price << ", OrderID: " << buyOrders[i].ID << "\n" <<
+                    "a acheter :" << disponible << " sell:: " << disponible <<"\n";
+                    SellCalcul( disponible, venteList[0].price);
+                    buyOrders[i].quantity -= disponible;
+                    disponible = buyOrders[i].quantity -= disponible;
+                    
+                    break;
+                } else {
+                    //disponible -= buyOrders[i].quantity;
+                    std::cout << "Client ID (Achat 2): " << buyOrders[i].clientID << ", Quantite: " << buyOrders[i].quantity << ", Prix: " << buyOrders[i].price << ", OrderID: " << buyOrders[i].ID << "\n" <<
+                    "a acheter :" << buyOrders[i].quantity << " sell:: " <<buyOrders[i].quantity << "\n";
+                    disponible =  buyOrders[i].quantity;
+                    removeBuyOrder(buyOrders[i].ID);
+                    SellCalcul(disponible, venteList[0].price);
+                }
+
+            }
         }
-        if(cost > 0)
-            std::cout << "ERROR BUY INVOICE CALCUL " << cost <<"\n";
     }
 
-    void SellInvoice(int dif, int cost){
-        std::cout << "---|SELL INVOICE" << dif <<"|---\n";
-        for (int size; size < buyOrders.size(); size ++) {
-            if (buyOrders[size].category == 1 && buyOrders[size].price <= cost){
-                if(dif >= buyOrders[size].quantity){
-                    std::cout << " Client ID " << buyOrders[size].clientID << " a vendu " << buyOrders[size].quantity << "\n";
-                    dif = buyOrders[size].quantity - dif;
-                    removeBuyOrder(buyOrders[size].ID);
-                }else{
-                    std::cout << " Client ID " << buyOrders[size].clientID << " a vendu " << cost << "\n";
-                    dif = cost - buyOrders[size].quantity;
-                    std::cout << "cost call :: " << cost - buyOrders[size].quantity << "\n";
-                    buyOrders[size].quantity -= size;
+    void SellCalcul(int sell, int cost){
+        std::cout << "======================== |Sell Calcul |===============\n";
+        for (int i = 0 ; i < buyOrders.size(); i++){
+            if(buyOrders[i].price <= cost && buyOrders[i].category == 1){
+               // std::cout << "Client ID (Vente 1): " << buyOrders[i].clientID << ", Quantite: " << buyOrders[i].quantity << ", Prix: " << buyOrders[i].price << ", OrderID: " << buyOrders[i].ID << " cost :: " <<  cost <<"\n" ;
+                if(buyOrders[i].quantity > sell) {
+                    std::cout << "Client ID (Vente 1): " << buyOrders[i].clientID << ", Quantite: " << buyOrders[i].quantity << ", Prix: " << buyOrders[i].price << ", OrderID: " << buyOrders[i].ID << "\n" <<
+                    "a vendu :" << sell << "\n";
+                    buyOrders[i].quantity -= sell;
+                    break;
+                } else {
+                    sell -= buyOrders[i].quantity;
+                    std::cout << "Client ID (Vente 2): " << buyOrders[i].clientID << ", Quantite: " << buyOrders[i].quantity << ", Prix: " << buyOrders[i].price << ", OrderID: " << buyOrders[i].ID << "\n" <<
+                    "a Vendu :" << buyOrders[i].quantity << "\n";
+                    removeBuyOrder(buyOrders[i].ID);
+                    SellCalcul(sell, cost);
                 }
             }
-            if(cost <= 0)
-                break;
         }
-        if(cost > 0)
-            std::cout << "ERROR SELL INVOICE CALCUL " << dif <<"\n";
+        manageSellMarcket();
     }
 
     private:
@@ -149,26 +133,21 @@ class OrderBook {
             achatList.clear();
             venteList.clear();
     
-            //std::cout << "-------------------| NEW TOUR |-----------------\n";
             for (const auto& order : buyOrders) {
                 bool merged = false;
 
                 if(order.category == 0){
-                    //std::cout << "achat ||order id" << order.ID << " categorie: " << order.category << "\n";
                     mergeAchat(order);
                 }else{
-                    //std::cout << "vente ||order id" << order.ID << " categorie: " << order.category << "\n";
                     mergeVente(order);
                 }
             }
             std::sort(venteList.begin(), venteList.end(), [](const auto& a, const auto& b) -> bool {
                 return a.price < b.price;
             });
-            std::cout << "UPDATE Sale SORT\n" ;
             std::sort(achatList.begin(), achatList.end(), [](const auto& a, const auto& b) -> bool {
                 return a.price > b.price;
             });
-            std::cout << "UPDATE SORT\n" ;
         }
 
         void mergeAchat(const Order& order) {
@@ -253,40 +232,19 @@ int main() {
     //orderBook.addBuyOrder(1, 5, 1000);
     orderBook.addBuyOrder(1, 5, 100);
     orderBook.addBuyOrder(2, 10, 95);
+    orderBook.addBuyOrder(7, 1, 98);
     orderBook.addBuyOrder(3, 8, 100);
     orderBook.addBuyOrder(7, 3, 100);
-    // std::cout << "_______| ManageSellMarcket |_________\n";
-    // orderBook.manageSellMarcket();
-    // orderBook.displayOrdersDetails();
-    // std::cout << "_______| 2 |_________\n";
     orderBook.addBuyOrder(1, 30, 60);
     orderBook.addSellOrder(4, 7, 105);
     orderBook.addSellOrder(5, 12, 98);
+    orderBook.addSellOrder(9, 2, 98);
     orderBook.addSellOrder(6, 6, 105);
 
     orderBook.displayOrdersDetails();
     std::cout << "\n_______| ORDER BOOK |_________\n";
     orderBook.displayOrderBook();
-    //std::cout << "\n_______| ManageSellMarcket |_________\n";
-    //orderBook.manageSellMarcket();
-    //std::cout << "\n_______| 2 |_________\n";
-    //orderBook.displayOrdersDetails();
-    //orderBook.displayOrdersDetails();
-    // Affichage des 10 premières lignes du carnet d'ordres
-    //std::cout << "\n_______| ORDER BOOK |_________\n";
-    //orderBook.displayOrderBook();
-
-    // orderBook.addSellOrder(4, 30, 15);
-    // orderBook.addSellOrder(5, 12, 100);
-    // orderBook.addSellOrder(6, 6, 10);
-     //orderBook.addBuyOrder(1, 30, 60);
-    // orderBook.addBuyOrder(2, 10, 95);
-    // orderBook.addBuyOrder(3, 8, 150);
-    // //std::cancelOrder(14);
-    // std::cout << "_______________________________________________________________\n";
-    // orderBook.displayOrdersDetails();
-    // std::cout << "''''''''''''''''''''''''''''''| id 2 |''''''''''''''''''''''''''''''''''''\n";
-    orderBook.displayClient(2);
+    //orderBook.displayClient(2);
     std::cout << "___________________________|MANAGE MARCKET|____________________________________\n";
     orderBook.manageSellMarcket();
     std::cout << "______________________________[DYSPALY MANAGE MARCKET]_________________________________\n";

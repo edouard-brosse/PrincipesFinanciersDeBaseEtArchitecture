@@ -18,7 +18,7 @@ class FixMessage{
         char *splitChar = "^";
         std::unordered_map<std::string, int> TagDictionary;
         std::unordered_map<int, int> TagDictionar;
-        //TagDictionary["8"] = 0;
+        //eTagDictionary["8"] = 0;
         TagDictionar[8] = 0;
         void Header () {
         }

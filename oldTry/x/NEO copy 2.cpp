@@ -110,8 +110,8 @@ class OrderBook {
             if(cost == 0)
                 break;
         }
-        // if(cost > 0)
-        //     std::cout << "ERROR BUY INVOICE CALCUL :: "<< dif <<"\n";
+        //if(cost > 0)
+        //    std::cout << "ERROR BUY INVOICE CALCUL :: "<< dif <<"\n";
     }
 
     void SellInvoice(int dif, int cost){
@@ -266,7 +266,7 @@ int main() {
     std::cout << "___________________________|MANAGE MARCKET|____________________________________\n";
     orderBook.manageSellMarcket();
     //std::cout << "______________________________[DYSPALY MANAGE MARCKET]_________________________________\n";
-    //std::cout << "\n_______| ORDER BOOK |_________\n";
+    std::cout << "\n_______| ORDER BOOK |_________\n";
     //orderBook.displayOrderBook();
     return 0;
 }
