@@ -180,6 +180,17 @@ void OrderBook::displayOrders(const std::vector<Order>& orderListAchat, const st
     }
 }
 
+void OrderBook::UpdateOrder(int ID, int quantity, int price) {
+    for (int i = 0; i < buyOrders.size(); i++) {
+        if (buyOrders[i].ID == ID) {
+            buyOrders[i].quantity = quantity;
+            buyOrders[i].price = price;
+            mergeOrders();
+            break;
+        }
+    }
+}
+
 void OrderBook::displayOrdersDetails(const std::vector<Order>& orderListAchat) {
     int count = 0;
     int maxSize = 10;

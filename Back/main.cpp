@@ -25,12 +25,13 @@ int main() {
     orderBook.displayOrderBook();
     std::cout << "___________________________|Client 1|____________________________________\n";
     orderBook.displayClient(1);
-    orderBook.removeBuyOrder(5);
-
+    orderBook.UpdateOrder(5, 20, 200);
+    std::cout << "___________________________|Client 1|____________________________________\n";
+    orderBook.displayClient(1);
    // orderBook.displayOrderBook();
     std::cout << "___________________________|Client 1|____________________________________\n";
-
-   orderBook.displayClient(1);
+    orderBook.removeBuyOrder(5);
+    orderBook.displayClient(1);
     return 0;
 }
 

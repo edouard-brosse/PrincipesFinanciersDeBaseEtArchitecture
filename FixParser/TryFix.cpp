@@ -30,3 +30,21 @@ class FIXMessage {
         void fixMaker(std::string msg);
 
 };
+
+// faire des classe message qui herite de la classe mere
+/*
+    faire une biblothe que 
+    qui herite des message type 
+
+    class fixmessage 
+     > methode d'inser
+
+    class logonmessage : public fixmessage
+
+    une class par message
+
+    connection
+    implementer une classe tcp // carnet d'ordre longon /   // log one
+    implementer une classe udp // log one 
+
+*/

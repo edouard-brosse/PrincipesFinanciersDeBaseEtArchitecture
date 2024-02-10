@@ -22,7 +22,8 @@ class OrderBook{
         void displayOrderBook();
         void displayOrdersDetails();
         void displayClient(int cliId);
-        void manageSellMarcket();
+        void manageSellMarcket(); // a deplacer pour otomatiser quand on ajoute un order
+        void UpdateOrder(int ID, int quantity, int price);
 
     private:
         int MyID = 0;

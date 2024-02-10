@@ -26,11 +26,11 @@ void FixParser::headerMaker(std::string msg) {
     Header.push_back("35=" + msg); // Integer message Sequence Number
     //Header.push_back("^");
     //  8 |Version de FIX
-    //  9 |Longueur du corps
+    //  9 |Longueur du corps  
     //  35 |Type de message
     //  49 |ID de l'envoyeur
     //  56 |ID du receveur
-    //  34 |Numero de la requette
+    //  34 |Numero de la requette  compeur de message par utilisateur continuer la suite de chifre (voir mechanisme champ 141)
     //  52 |Heure d'envoie
 
     //type ici 
@@ -47,6 +47,8 @@ void FixParser::headerMaker(std::string msg) {
    //Final = temp;
    std::cout << Final << "\n";
 }
+
+//void 
 
 void FixParser::BodyMaker(std::string msg) {
     std::string msgType = "";
