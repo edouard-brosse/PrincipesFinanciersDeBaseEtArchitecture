@@ -39,7 +39,40 @@ class FixLib {
         */
         // trailer  // NE change pas https://www.onixs.biz/fix-dictionary/4.3/compBlock_StandardTrailer.html
         //  10 Checkum 
+        std::unordered_map<std::string, std::string> HeaderLib;
+        std::unordered_map<std::string, std::string> BodyLib;
+        std::unordered_map<std::string, std::string> TrailLib;
+        struct BodyLib {
+            std::string ID;
+            std::string Content;
+            BodyLib(std::string id, std::string content) : ID(id), Content(content) {}
+        };
     public:
+        initLib(){
+            HeaderLib["8"] = "BeginString";
+            HeaderLib["9"] = "BodyLength";
+            HeaderLib["35"] = "MsgType";
+            HeaderLib["49"] = "SenderCompID";
+            HeaderLib["56"] = "TargetCompID";
+            HeaderLib["34"] = "MsgSeqNum";
+            HeaderLib["52"] = "SendingTime";
+            BodyLib["11"] = "ClOrdID";
+            BodyLib["21"] = "HandlInst";
+            BodyLib["55"] = "Symbol";
+            BodyLib["54"] = "Side";
+            BodyLib["60"] = "TransactTime";
+            BodyLib["40"] = "OrdType";
+            TrailLib["10"] = "Checkum";
+
+            //// ou 
+
+            BodyLib.push_back(BodyLib("11", "ClOrdID"));
+            BodyLib.push_back(BodyLib("21", "HandlInst"));
+        }
+
+        // faut t'il faire plusieurs lib ou une seul suffit ?
+
+
      //https://www.onixs.biz/fix-dictionary/4.2/app_d.html
     // 8=FIX.4.2^9=76^35=A^49=BuySide^56=SellSide^34=1^52=20190605-11:27:06.897^98=0^108=30^141=Y^10=008^
 };
