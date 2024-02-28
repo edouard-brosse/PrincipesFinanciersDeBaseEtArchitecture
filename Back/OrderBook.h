@@ -37,7 +37,7 @@ class OrderBook{
         void mergeVente(const Order& order);
         void displayOrders(const std::vector<Order>& orderListAchat, const std::vector<Order>& orderListVente);
         void displayOrdersDetails(const std::vector<Order>& orderListAchat);
-        void BuyCallcul();
+        void BuyCallcul(OrderBook *orderBook);
         void SellCalcul(int sell, int cost);
 };
 
