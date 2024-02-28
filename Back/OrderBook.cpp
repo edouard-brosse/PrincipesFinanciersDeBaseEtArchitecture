@@ -19,7 +19,7 @@ void OrderBook::removeBuyOrder(int ID) {
             });
             buyOrders.erase(it, buyOrders.end());
             mergeOrders();
-        }
+        } 
     
 void OrderBook::displayOrderBook() {
     std::cout << "Sort Merge List| TEST |\nAchat:\t\t\t\t\t\tVente:\n";
@@ -35,7 +35,10 @@ void OrderBook::displayClient(int cliId) {
     std::cout << "Ordres d'achat pour le client ID " << cliId << " :\n";
     for (const auto& order : buyOrders) {
         if (order.clientID == cliId) {
-            std::cout << "Client ID (Achat): " << order.clientID << ", Quantite: " << order.quantity << ", Prix: " << order.price << ", OrderID: " << order.ID << "\n";
+            std::cout << "Client ID : " << order.clientID << " Category: " << order.category << ", Quantite: " << order.quantity << ", Prix: " << order.price << ", OrderID: " << order.ID << "\n";
+        }
+        else {
+            std::cout << "OTHER" << order.clientID << " Category: " << order.category <<" Quantite: " << order.quantity << " price " << order.price << " OrderID: " << order.ID << "\n";
         }
     }
 }
@@ -50,7 +53,11 @@ void OrderBook::manageSellMarcket() {
         if(venteList.empty())
             break;
        if (achatList[y].price >= venteList[0].price){
+          std::cout << "===NEW BUY CALLCUL===" << "\n";
+          std::cout << "[[[[[[[[OrderBook]]]]]]]]" << "\n";
+          displayOrderBook();
           BuyCallcul();
+          
           manageSellMarcket();
         }
     }
@@ -58,8 +65,11 @@ void OrderBook::manageSellMarcket() {
 
 void OrderBook::BuyCallcul(){
     int disponible = venteList[0].quantity;
-    //std::cout << "======================== |Buy Calcul |===============\n";
+    std::cout << "======================== |Buy Calcul |===============\n";
     for (int i = 0; i < buyOrders.size(); i++){
+        std::cout << " _____ tour : " << i << "\n";
+        std::cout << "disponible : " << disponible << "\n";
+        std::cout << i << " : " << buyOrders[i].quantity << " : " << buyOrders[i].price <<"\n";
         if(disponible < 1)
             break;
         if(buyOrders[i].price >= venteList[0].price && buyOrders[i].category == 0){
@@ -67,12 +77,17 @@ void OrderBook::BuyCallcul(){
                 std::cout << "Client ID" << buyOrders[i].clientID << " a acheter: " << disponible << " au prix de: " << venteList[0].price << "\n";
                 // std::cout << "Client ID (Achat 1): " << buyOrders[i].clientID << ", Quantite: " << buyOrders[i].quantity << ", Prix: " << buyOrders[i].price << ", OrderID: " << buyOrders[i].ID << "\n" <<
                 // "a acheter :" << disponible << " sell:: " << disponible <<"\n";
+                std::cout << "-----\nav1 Quantity " << buyOrders[i].quantity << " disponible " << disponible << "\n";
                 SellCalcul( disponible, venteList[0].price);
+                std::cout << "SELL Quantity " << buyOrders[i].quantity << " disponible " << disponible << "\n";
                 buyOrders[i].quantity -= disponible;
-                disponible = buyOrders[i].quantity -= disponible;
-                
-                break;
+                disponible = 0;
+                std::cout << "Apr1 Quantity " << buyOrders[i].quantity << " disponible " << disponible << "\n\n";
+                //disponible = buyOrders[i].quantity -= disponible;
+                std::cout << " ####disponible FINAL : " << disponible << "\n";
+                //break;
             } else {
+                std::cout << "=== REMOVE ==" << std::endl;
                 //std::cout << "Client ID (Achat 2): " << buyOrders[i].clientID << ", Quantite: " << buyOrders[i].quantity << ", Prix: " << buyOrders[i].price << ", OrderID: " << buyOrders[i].ID << "\n" <<
                 //"a acheter :" << buyOrders[i].quantity << " sell:: " <<buyOrders[i].quantity << "\n";
                 std::cout << "Client ID" << buyOrders[i].clientID << " a acheter: " << buyOrders[i].quantity << " au prix de: " << venteList[0].price << "\n";
@@ -80,6 +95,7 @@ void OrderBook::BuyCallcul(){
                 removeBuyOrder(buyOrders[i].ID);
                 SellCalcul(disponible, venteList[0].price);
             }
+            std::cout << "disponible FINAL : " << disponible <<  " qut " << buyOrders[i].quantity<< "\n";
         }
     }
 }
@@ -94,13 +110,19 @@ void OrderBook::SellCalcul(int sell, int cost){
                 //std::cout << "Client ID (Vente 1): " << buyOrders[i].clientID << ", Quantite: " << buyOrders[i].quantity << ", Prix: " << buyOrders[i].price << ", OrderID: " << buyOrders[i].ID << "\n" <<
                 //"a vendu :" << sell << "\n";
                 buyOrders[i].quantity -= sell;
+                //std::cout << "###buyOrder Quantity FINAL : " << buyOrders[i].quantity << " sell:: " << sell << "\n";
                 break;
             } else {
                 sell -= buyOrders[i].quantity;
-                //std::cout << "Client ID (Vente 2): " << buyOrders[i].clientID << ", Quantite: " << buyOrders[i].quantity << ", Prix: " << buyOrders[i].price << ", OrderID: " << buyOrders[i].ID << "\n" <<
-                //"a Vendu :" << buyOrders[i].quantity << "\n";
-                std::cout << "Client ID" << buyOrders[i].clientID << " a vendu: " << buyOrders[i].quantity << " au prix de: " << cost << "\n";
+                std::cout << "Client ID (Vente 2): " << buyOrders[i].clientID << ", Quantite: " << buyOrders[i].quantity << ", Prix: " << buyOrders[i].price << ", OrderID: " << buyOrders[i].ID << "\n" <<
+                "a Vendu :" << buyOrders[i].quantity << "\n";
+                //std::cout << "Client ID" << buyOrders[i].clientID << " a vendu: " << buyOrders[i].quantity << " au prix de: " << cost << "\n";
+                //std::cout << "###buyOrder Quantity FINAL : " << buyOrders[i].quantity << " price " << buyOrders[i].price << " sell:: " << sell << "\n";
+                //displayOrderBook();
                 removeBuyOrder(buyOrders[i].ID);
+                
+                //std::cout << "###buyOrder Quantity AFTER FINAL : " << buyOrders[i].quantity << " price " << buyOrders[i].price << " sell:: " << sell << "\n";
+                //displayOrderBook(); 
                 SellCalcul(sell, cost);
             }
         }

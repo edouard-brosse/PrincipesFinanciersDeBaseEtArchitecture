@@ -2,21 +2,17 @@
 
 int main() {
     OrderBook orderBook;
-    orderBook.addBuyOrder(1, 4, 1000);
-    orderBook.addBuyOrder(1, 4, 100);
-    orderBook.addSellOrder(1, 5, 1000);
-    orderBook.addSellOrder(1, 5, 100);
-    //orderBook.addBuyOrder(1, 5, 1000);
-    //orderBook.addBuyOrder(1, 5, 100);
-    //orderBook.addBuyOrder(2, 10, 95);
-    //orderBook.addBuyOrder(7, 1, 98);
-    //orderBook.addBuyOrder(3, 8, 100);
-    //orderBook.addBuyOrder(7, 3, 100);
-    //orderBook.addBuyOrder(1, 30, 60);
-    //orderBook.addSellOrder(4, 7, 105);
-    //orderBook.addSellOrder(5, 12, 98);
-    //orderBook.addSellOrder(9, 2, 98);
-    //orderBook.addSellOrder(6, 6, 105);
+    orderBook.addBuyOrder(1, 5, 1000);
+    orderBook.addBuyOrder(1, 5, 100);
+    orderBook.addBuyOrder(2, 10, 95);
+    orderBook.addBuyOrder(7, 1, 98);
+    orderBook.addBuyOrder(3, 8, 100);
+    orderBook.addBuyOrder(7, 3, 100);
+    orderBook.addBuyOrder(1, 30, 60);
+    orderBook.addSellOrder(4, 7, 105);
+    orderBook.addSellOrder(5, 12, 98);
+    orderBook.addSellOrder(9, 2, 98);
+    orderBook.addSellOrder(6, 6, 105);
 
     orderBook.displayOrdersDetails();
     std::cout << "\n_______| ORDER BOOK |_________\n";

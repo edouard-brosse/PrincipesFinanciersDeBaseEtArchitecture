@@ -68,23 +68,56 @@ AddHeader::HeaderMaker(std::string body, std::string MsgType, std::string RqtNb)
 
     header.append("8=FIX.4.2^");
     header.append("9="+ body.length().to_string()+ "^");
-    header.append("35=" +  + "^");
+    header.append("35=" + MsgType + "^");
+    header.append("49=" + + "^");
     header.append("56=" + + "^");
     header.append("34=" + RqtNb + "^");
-    header.append("52=" +  + "^");
+    header.append("52=" + now->tm_hour + ":" + now->tm_min + ":" + now->tm_sec + "^");
     
     return header;
 }
 
+class AddTrailler: LibData {
+    private:
+        std::string traillerCalculated(std::string body);
+    public:
+        std::string TraillerMaker(std::string body);
+};
+
+std::string traillerCalculated(std::string body){
+    std::string trailler = "";
+    int sum = 0;
+    for (char c : message) {
+        sum += c; // Ajoute la valeur ASCII de chaque caractère
+    }
+    int temp = sum % 256;
+    trailer = std::string(3 - temp.length(), '0'); // Retourne le résultat modulo 256
+
+    return trailler;
+}
+
+AddTrailler::TraillerMaker(std::string body){
+    std::string trailler = "";
+    trailler.append("10=" + traillerCalculated(body) + "^");
+    return trailler;
+}
+
 class AddOrder : public LibData {
 public:
-    void addOrder(const std::string& clOrdID, const std::string& symbol, const std::string& side, const std::string& transactTime, const std::string& ordType) {
+    void addOrder(const std::string& clOrdID, const std::string& symbol, const std::string& side, const std::string& ordType) {
+        auto currentTime = std::chrono::system_clock::now();
+        std::time_t currentTime_t = std::chrono::system_clock::to_time_t(currentTime);
+
+
+        std::string body = " ";
         std::vector<std::pair<std::string, std::string>> orderData;
-        orderData.push_back({"11", clOrdID});
-        orderData.push_back({"55", symbol});
-        orderData.push_back({"54", side});
-        orderData.push_back({"60", transactTime});
-        orderData.push_back({"40", ordType});
+        orderData.push_back({"11", clOrdID, "^"}); // sender ID
+        orderData.push_back({"21", "3", "^"}); // 3 = Manual // 1 = Automated 
+        orderData.push_back({"55", "[N/A]", "^"}); // nos special symbol
+        orderData.push_back({"54", "1", "^"});//  1 = Buy, 2 = Sell, 
+        orderData.push_back({"60", std::asctime(std::gmtime(&currentTime_t)).to_string, "^"});
+        orderData.push_back({"40", "2" , "^"}); //ordType: 1 = Market, 2 = Limit, 3 = Stop, 4 = Stop limit, ...
+        orderData.push_back(AddHeader::HeaderMaker(body, "D", "1")); 
 
         setData("BodyLib", orderData);
     }
@@ -104,6 +137,10 @@ public:
 //public:
 //
 //};
+
+int main(int a, char av){
+    AddOrder::addOrder()
+}
 
 
 //int main() {
