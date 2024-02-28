@@ -92,7 +92,6 @@ std::string traillerCalculated(std::string body){
     }
     int temp = sum % 256;
     trailer = std::string(3 - temp.length(), '0'); // Retourne le résultat modulo 256
-
     return trailler;
 }
 
@@ -118,6 +117,7 @@ public:
         orderData.push_back({"60", std::asctime(std::gmtime(&currentTime_t)).to_string, "^"});
         orderData.push_back({"40", "2" , "^"}); //ordType: 1 = Market, 2 = Limit, 3 = Stop, 4 = Stop limit, ...
         orderData.push_back(AddHeader::HeaderMaker(body, "D", "1")); 
+        
 
         setData("BodyLib", orderData);
     }
