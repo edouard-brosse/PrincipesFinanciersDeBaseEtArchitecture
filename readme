@@ -1,0 +1,12 @@
+g++
+ -std=c++14 -o server server.cpp -pthread
+g++ -o client client.cpp
+
+./server
+
+./client 127.0.0.1 register testt:12
+./client 127.0.0.1 login testt:12
+
+bbb -> udp test
+autre -> tcp
+exit -> fin session
