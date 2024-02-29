@@ -224,16 +224,31 @@ class LogOn: public AddHeader, public Trailler{
         }
 };
 
+
 class MarketSnapshot: public AddHeader, public Trailer{
     public:
-        void MarketDataSnapshot( std::string Sender, std::string Target, std::string price) {            
+        std::string Data(std::vector<Order> buyOrders){
+            std::string orderData;
+            for(int i = 0; i < buyOrders.size(); i++){
+                
+                orderData.append("^269=" );
+                orderData.append(buyOrders[i].category);
+                orderData.append("^270=" );
+                orderData.append(buyOrders[i].price);
+                orderData.append("^271=" );
+                orderData.append(buyOrders[i].quantity);
+                orderData.append(std::to_string(i*10));
+            }
+
+            return orderData;
+        }
+
+        void MarketDataSnapshot( std::string Sender, std::string Target, std::string price, std::vector<Order> buyOrders) {            
             std::string orderData;
             orderData.append("^55=TECK"); // nos special symbol
             orderData.append("^268=" );
-            orderData.append();
-            orderData.append("^269=3" );
-            orderData.append("^270=" );
-            orderData.append(price);
+            orderData.append(buyOrders.size().to_string());
+            orderData.append(Data(buyOrders));
             orderData.insert(0, HeaderMaker(orderData, "W", "1", Sender, Target));
             orderData.append(TraillerMaker(orderData));
             std::cout << "EXECUTION REPORT Data:\n" << orderData << std::endl;
@@ -241,23 +256,51 @@ class MarketSnapshot: public AddHeader, public Trailer{
 };
 
 
+class MarketDataIncrRefresh: public AddHeader, public Trailer{
+    public:
+        std::string Data(std::vector<Order> buyOrders){
+            std::string orderData;
+            for(int i = 0; i < buyOrders.size(); i++){
+                
+                orderData.append("^269=" );
+                orderData.append(buyOrders[i].category);
+                orderData.append("^270=" );
+                orderData.append(buyOrders[i].price);
+                orderData.append("^271=" );
+                orderData.append(buyOrders[i].quantity);
+                orderData.append(std::to_string(i*10));
+            }
 
+            return orderData;
+        }
 
-int main(){
-    AddOrder addOrder;
-    std::string clOrdID = "1";
-    std::string price = "100";
-    std::string qty = "10";
-    addOrder.addOrder(clOrdID, price, qty, "SENDER", "TARGET");
-    AddOrderSell addOrderSell;
-    addOrderSell.SellOrder(clOrdID, price, qty, "SENDER", "TARGET");
-    UpdateOrder updateOrder;
-    //updateOrder.UpdateOrd(clOrdID, price, qty, "SENDER", "TARGET", "10", "2");
-    updateOrder.UpdateOrd(clOrdID, price,  qty,  "Sender", "Target", "10", "NewID", "2");
-    OrderCancel orderCancel;
-    orderCancel.CancelOrd(clOrdID, "Sender", "Target", "10", "2");
-    ExReport exReport;
-    exReport.ExecutionReport("Sender", "Target", "10", "2", "0", "0", "10", "13");
-    LogOn logOn;
-    logOn.logOn("Sender", "Target");
-}
+        void MarketDataSnapshot( std::string Sender, std::string Target, std::string price, std::vector<Order> buyOrders) {            
+            std::string orderData;
+            orderData.append("^55=TECK"); // nos special symbol
+            orderData.append("^268=" );
+            orderData.append(buyOrders.size().to_string());
+            orderData.append(Data(buyOrders));
+            orderData.insert(0, HeaderMaker(orderData, "X", "1", Sender, Target));
+            orderData.append(TraillerMaker(orderData));
+            std::cout << "EXECUTION REPORT Data:\n" << orderData << std::endl;
+        }
+};
+
+//int main(){
+//    AddOrder addOrder;
+//    std::string clOrdID = "1";
+//    std::string price = "100";
+//    std::string qty = "10";
+//    addOrder.addOrder(clOrdID, price, qty, "SENDER", "TARGET");
+//    AddOrderSell addOrderSell;
+//    addOrderSell.SellOrder(clOrdID, price, qty, "SENDER", "TARGET");
+//    UpdateOrder updateOrder;
+//    //updateOrder.UpdateOrd(clOrdID, price, qty, "SENDER", "TARGET", "10", "2");
+//    updateOrder.UpdateOrd(clOrdID, price,  qty,  "Sender", "Target", "10", "NewID", "2");
+//    OrderCancel orderCancel;
+//    orderCancel.CancelOrd(clOrdID, "Sender", "Target", "10", "2");
+//    ExReport exReport;
+//    exReport.ExecutionReport("Sender", "Target", "10", "2", "0", "0", "10", "13");
+//    LogOn logOn;
+//    logOn.logOn("Sender", "Target");
+//}
