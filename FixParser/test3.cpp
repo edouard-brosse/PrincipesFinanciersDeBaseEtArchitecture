@@ -13,13 +13,9 @@ public:
     std::string GetTime() {
         std::time_t currentTime = std::time(nullptr);
         std::tm* now = std::localtime(&currentTime);
-
-        // Formatage de la date et de l'heure
-        //return std::put_time(now, "%y%m%d-%H:%M:%S");
         std::stringstream ss;
         ss << std::put_time(now, "%y%m%d-%H:%M:%S");
 
-    // Convertir la sortie de std::put_time en std::string
         std::string dateTimeStr = ss.str();
 
         return dateTimeStr;
@@ -81,8 +77,6 @@ class AddOrder: public LibData{
 public:
 
     void addOrder(const std::string clOrdID, const std::string price, const std::string qty, std::string Sender, std::string Target) {
-        auto currentTime = std::chrono::system_clock::now();
-        std::time_t currentTime_t = std::chrono::system_clock::to_time_t(currentTime);
         std::string orderData;
         //std::vector<std::pair<std::string, std::string>> orderData;
         orderData.append("11=" ); // sender ID
@@ -100,18 +94,48 @@ public:
         orderData.append("^");
         AddHeader header;
         Trailler trailler;
-        //std::cout << "\n header \n" << header.HeaderMaker(orderData, "D", "1") << std::endl;
         orderData.insert(0, header.HeaderMaker(orderData, "D", "1", Sender, Target));
-        //std::cout << "Order Data: " << orderData << std::endl;
         orderData.append(trailler.TraillerMaker(orderData));
         std::cout << "Order Data:\n" << orderData << std::endl;
     }
 };
 
-int main(int a, char** av){
+class UpdateOrder: public AddHeader, public Trailler{
+    public:
+        void UpdateOrd(const std::string clOrdID, std::string price,  std::string qty, std::string Sender, std::string Target, std::string OrderId, std::string NewID, std::string OrderType) {            
+            std::string orderData;
+
+            orderData.append("11=" ); // sender ID
+            orderData.append(clOrdID);
+            orderData.append("41=" ); // sender ID
+            orderData.append(NewID);
+            orderData.append("^21=3"); // 3 = Manual // 1 = Automated
+            orderData.append("^55=TECK"); // nos special symbol
+            orderData.append("^54=" );//  1 = Buy, 2 = Sell, //side
+            orderData.append(OrderType);
+            orderData.append("^60=" );
+            orderData.append(GetTime());
+            orderData.append("^40=2" ); //ordType: 1 = Market, 2 = Limit, 3 = Stop, 4 = Stop limit, ...
+            orderData.append("^37=" ); // ORDER ID
+            orderData.append(OrderId);
+            orderData.append("^44=" ); // price
+            orderData.append(price);
+            orderData.append("^38=" ); // qty
+            orderData.append(qty);
+            orderData.append("^");
+            orderData.insert(0, HeaderMaker(orderData, "G", "1", Sender, Target));
+            orderData.append(TraillerMaker(orderData));
+            std::cout << "UPDATE Data:\n" << orderData << std::endl;
+        }
+};
+
+int main(){
     AddOrder addOrder;
     std::string clOrdID = "1";
     std::string price = "100";
     std::string qty = "10";
     addOrder.addOrder(clOrdID, price, qty, "SENDER", "TARGET");
+    UpdateOrder updateOrder;
+    //updateOrder.UpdateOrd(clOrdID, price, qty, "SENDER", "TARGET", "10", "2");
+    updateOrder.UpdateOrd(clOrdID, price,  qty,  "Sender", "Target", "10", "NewID", "2");
 }
