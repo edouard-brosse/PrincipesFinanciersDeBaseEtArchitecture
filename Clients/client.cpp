@@ -5,6 +5,7 @@
 #include <arpa/inet.h>
 #include <iostream>
 #include "FixProtocol.h"
+#include <iterator>
 
 #define TCP_PORT 7799
 #define UDP_PORT 7799

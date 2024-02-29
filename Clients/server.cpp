@@ -6,6 +6,8 @@
 #include <netinet/in.h>
 #include <iostream>
 #include <arpa/inet.h>
+#include <functional>
+#include "../Back/OrderBook.h"
 
 #define TCP_PORT 7799
 #define UDP_PORT 7799
