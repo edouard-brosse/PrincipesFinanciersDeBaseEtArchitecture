@@ -101,6 +101,33 @@ public:
     }
 };
 
+class AddOrderSell: public LibData{
+public:
+
+    void addOrder(const std::string clOrdID, const std::string price, const std::string qty, std::string Sender, std::string Target) {
+        std::string orderData;
+        //std::vector<std::pair<std::string, std::string>> orderData;
+        orderData.append("11=" ); // sender ID
+        orderData.append(clOrdID);
+        orderData.append("^21=3"); // 3 = Manual // 1 = Automated
+        orderData.append("^55=TECK"); // nos special symbol
+        orderData.append("^54=2" );//  1 = Buy, 2 = Sell, //side
+        orderData.append("^60=" );
+        orderData.append(GetTime());
+        orderData.append("^40=2" ); //ordType: 1 = Market, 2 = Limit, 3 = Stop, 4 = Stop limit, ...
+        orderData.append("^44=" ); // price
+        orderData.append(price);
+        orderData.append("^38=" ); // qty
+        orderData.append(qty);
+        orderData.append("^");
+        AddHeader header;
+        Trailler trailler;
+        orderData.insert(0, header.HeaderMaker(orderData, "D", "1", Sender, Target));
+        orderData.append(trailler.TraillerMaker(orderData));
+        std::cout << "Order Data:\n" << orderData << std::endl;
+    }
+};
+
 class UpdateOrder: public AddHeader, public Trailler{
     public:
         void UpdateOrd(const std::string clOrdID, std::string price,  std::string qty, std::string Sender, std::string Target, std::string OrderId, std::string NewID, std::string OrderType) {            
@@ -197,31 +224,21 @@ class LogOn: public AddHeader, public Trailler{
         }
 };
 
-//class MarketSnapshot: public AddHeader, public Trailer{
-//    public:
-//        void MarketDataSnapshot( std::string Sender, std::string Target, std::string OrderType, std::string ExecType, std::string OrdStatus, std::string nb, std::string prixMoyen, sdtd::string ExID) {            
-//            std::string orderData;
-//            orderData.append("^37=8" );
-//            orderData.append("^17="); ///////////////////// completer 
-//            orderData.append(ExID)
-//            orderData.append("^55=TECK"); // nos special symbol
-//            orderData.append("^54=" );//  1 = Buy, 2 = Sell, //side
-//            orderData.append(OrderType);
-//            orderData.append("^150=" );
-//            orderData.append(ExecType);
-//            orderData.append("^39=" );
-//            orderData.append(OrdStatus);
-//            orderData.append("^151=" ); //////// check this file
-//            orderData.append("^14=");// nombre d'achat/vente executé
-//            orderData.append(nb);
-//            orderData.append("^6="); // prix moyen pour toute les vente de l'ordre
-//            orderData.append(prixMoyen);
-//            orderData.append("^");
-//            orderData.insert(0, HeaderMaker(orderData, "8", "1", Sender, Target));
-//            orderData.append(TraillerMaker(orderData));
-//            std::cout << "EXECUTION REPORT Data:\n" << orderData << std::endl;
-//        }
-//};
+class MarketSnapshot: public AddHeader, public Trailer{
+    public:
+        void MarketDataSnapshot( std::string Sender, std::string Target, std::string price) {            
+            std::string orderData;
+            orderData.append("^55=TECK"); // nos special symbol
+            orderData.append("^268=" );
+            orderData.append();
+            orderData.append("^269=3" );
+            orderData.append("^270=" );
+            orderData.append(price);
+            orderData.insert(0, HeaderMaker(orderData, "W", "1", Sender, Target));
+            orderData.append(TraillerMaker(orderData));
+            std::cout << "EXECUTION REPORT Data:\n" << orderData << std::endl;
+        }
+};
 
 
 
