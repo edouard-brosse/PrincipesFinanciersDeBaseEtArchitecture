@@ -104,7 +104,7 @@ public:
 class AddOrderSell: public LibData{
 public:
 
-    void addOrder(const std::string clOrdID, const std::string price, const std::string qty, std::string Sender, std::string Target) {
+    void SellOrder(const std::string clOrdID, const std::string price, const std::string qty, std::string Sender, std::string Target) {
         std::string orderData;
         //std::vector<std::pair<std::string, std::string>> orderData;
         orderData.append("11=" ); // sender ID
@@ -124,7 +124,7 @@ public:
         Trailler trailler;
         orderData.insert(0, header.HeaderMaker(orderData, "D", "1", Sender, Target));
         orderData.append(trailler.TraillerMaker(orderData));
-        std::cout << "Order Data:\n" << orderData << std::endl;
+        std::cout << "SELL Order Data:\n" << orderData << std::endl;
     }
 };
 
@@ -249,6 +249,8 @@ int main(){
     std::string price = "100";
     std::string qty = "10";
     addOrder.addOrder(clOrdID, price, qty, "SENDER", "TARGET");
+    AddOrderSell addOrderSell;
+    addOrderSell.SellOrder(clOrdID, price, qty, "SENDER", "TARGET");
     UpdateOrder updateOrder;
     //updateOrder.UpdateOrd(clOrdID, price, qty, "SENDER", "TARGET", "10", "2");
     updateOrder.UpdateOrd(clOrdID, price,  qty,  "Sender", "Target", "10", "NewID", "2");
