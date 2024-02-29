@@ -182,10 +182,15 @@ class ExReport: public AddHeader, public Trailler{
 
 class LogOn: public AddHeader, public Trailler{
     public:
-        void logOn( std::string Sender, std::string Target) {            
+        void logOn( std::string Sender, std::string Target, std::string psw, std::string UserName) {            
             std::string orderData;
             orderData.append("^98=0");
             orderData.append("^108=30");
+            orderData.append("^554=");
+            orderData.append(psw);
+            orderData.append("^553=");
+            orderData.append(UserName);
+            orderData.append("^");
             orderData.insert(0, HeaderMaker(orderData, "A", "1", Sender, Target));
             orderData.append(TraillerMaker(orderData));
             std::cout << "LOGON Data:\n" << orderData << std::endl;
