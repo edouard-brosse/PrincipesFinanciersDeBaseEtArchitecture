@@ -115,7 +115,8 @@ class UpdateOrder: public AddHeader, public Trailler{
             orderData.append(OrderType);
             orderData.append("^60=" );
             orderData.append(GetTime());
-            orderData.append("^40=2" ); //ordType: 1 = Market, 2 = Limit, 3 = Stop, 4 = Stop limit, ...
+            orderData.append("^40=" ); //ordType: 1 = Market, 2 = Limit, 3 = Stop, 4 = Stop limit, ...
+            orderData.append( OrderType);
             orderData.append("^37=" ); // ORDER ID
             orderData.append(OrderId);
             orderData.append("^44=" ); // price
@@ -129,6 +130,55 @@ class UpdateOrder: public AddHeader, public Trailler{
         }
 };
 
+class OrderCancel:  public AddHeader, public Trailler{
+    public:
+        void CancelOrd(const std::string clOrdID, std::string Sender, std::string Target, std::string OrderId, std::string OrderType) {            
+            std::string orderData;
+
+            orderData.append("^11=" ); // sender ID
+            orderData.append(clOrdID);
+            orderData.append("^41=" );
+            orderData.append(OrderId); /// check ce champ
+            orderData.append("^21=3"); // 3 = Manual // 1 = Automated
+            orderData.append("^55=TECK"); // nos special symbol
+            orderData.append("^54=" );//  1 = Buy, 2 = Sell, //side
+            orderData.append(OrderType);
+            orderData.append("^60=" );
+            orderData.append(GetTime());
+            orderData.append("^40=2" ); //ordType: 1 = Market, 2 = Limit, 3 = Stop, 4 = Stop limit, ...
+            orderData.append("^");
+            orderData.insert(0, HeaderMaker(orderData, "F", "1", Sender, Target));
+            orderData.append(TraillerMaker(orderData));
+            std::cout << "CANCEL Data:\n" << orderData << std::endl;
+        }
+};
+
+class ExReport: public AddHeader, public Trailler{
+    public:
+        void ExecutionReport( std::string Sender, std::string Target, std::string OrderType, std::string ExecType, std::string OrdStatus, std::string nb, std::string prixMoyen) {            
+            std::string orderData;
+            orderData.append("^37=8" );
+            orderData.append("^17="); ///////////////////// completer 
+
+            orderData.append("^55=TECK"); // nos special symbol
+            orderData.append("^54=" );//  1 = Buy, 2 = Sell, //side
+            orderData.append(OrderType);
+            orderData.append("^150=" );
+            orderData.append(ExecType);
+            orderData.append("^39=" );
+            orderData.append(OrdStatus);
+            orderData.append("^151=" ); //////// check this file
+            orderData.append("^14=");// nombre d'achat/vente executé
+            orderData.append(nb);
+            orderData.append("^6="); // prix moyen pour toute les vente de l'ordre
+            orderData.append(prixMoyen);
+            orderData.append("^");
+            orderData.insert(0, HeaderMaker(orderData, "8", "1", Sender, Target));
+            orderData.append(TraillerMaker(orderData));
+            std::cout << "EXECUTION REPORT Data:\n" << orderData << std::endl;
+        }
+};
+
 int main(){
     AddOrder addOrder;
     std::string clOrdID = "1";
@@ -138,4 +188,8 @@ int main(){
     UpdateOrder updateOrder;
     //updateOrder.UpdateOrd(clOrdID, price, qty, "SENDER", "TARGET", "10", "2");
     updateOrder.UpdateOrd(clOrdID, price,  qty,  "Sender", "Target", "10", "NewID", "2");
+    OrderCancel orderCancel;
+    orderCancel.CancelOrd(clOrdID, "Sender", "Target", "10", "2");
+    ExReport exReport;
+    exReport.ExecutionReport("Sender", "Target", "10", "2", "0", "0", "10");
 }
