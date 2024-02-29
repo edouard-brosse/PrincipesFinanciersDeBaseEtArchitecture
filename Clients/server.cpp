@@ -68,7 +68,22 @@ void handleTCPClient(int clientSocket, struct sockaddr_in clientAddr) {
         if (command == "exit") {
             std::string response = "You exit and your ID is " + id;
             write(clientSocket, response.c_str(), response.size());
-        } else {
+        }  else if (command.rfind("see-my-orders-id-:", 0) == 0) {
+    std::string id = command.substr(std::string("see my orders id :").length());
+    connectedClients[id] = clientSocket;
+    socketIdMap[clientSocket] = id;
+    int udpSocket = socket(PF_INET, SOCK_DGRAM, 0);
+    clientUDPSockets[id] = udpSocket;
+
+    // REMPLIRE RESPONSE
+    std::string response = "le retour sous format string des orders pour l'id :" + id;
+    write(clientSocket, response.c_str(), response.size());
+} else if (command == "see-all-orders-server") {
+
+            //REMPLIRE RESPONSE
+            std::string response = "le retour sous format string des orders generals ";
+            write(clientSocket, response.c_str(), response.size());
+    } else {
             std::string response = "Unknown command Your ID is " + id;
             write(clientSocket, response.c_str(), response.size());
         }
@@ -91,6 +106,7 @@ void handleUDPClient(std::string id) {
             idMap.erase(id);
             return;
         } else {
+
             //std::string response = "coucou. Your ID is " + id + ". Received message: " + receivedMessage;
             //sendto(udpSocket, response.c_str(), response.size(), 0, (struct sockaddr*)&clientAddr, addr_size);
 

@@ -91,11 +91,12 @@ int main(int argc, char* argv[]) {
     } else if (message == "exit") {
         tcpClient(argv[1], TCP_PORT, message.c_str());
         break;
-    } else if (message == "see all orders server") {
+    } else if (message == "see-all-orders-server") {
         tcpClient(argv[1], TCP_PORT, message.c_str());           
-    } else if (message == "see my orders server") {
-        tcpClient(argv[1], TCP_PORT, message.c_str());           
-    } else {
+    } else if (message.rfind("see-my-orders", 0) == 0) {
+    message += "-id-:" + id;
+    tcpClient(argv[1], TCP_PORT, message.c_str());           
+} else {
         tcpClient(argv[1], TCP_PORT, message.c_str());
     }
 }
