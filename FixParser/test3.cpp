@@ -28,7 +28,7 @@ public:
 
 class AddHeader: public LibData{
 public:
-    std::string HeaderMaker(std::string body, std::string MsgType, std::string RqtNb) {
+    std::string HeaderMaker(std::string body, std::string MsgType, std::string RqtNbn, std::string Sender, std::string Target) {
         std::string header = "";
         std::time_t t = std::time(nullptr);
         std::tm* now = std::localtime(&t);
@@ -38,10 +38,12 @@ public:
         header.append(std::to_string(body.length()));
         header.append("^35=" );
         header.append(MsgType);
-        header.append("^49=Sender^"); // You need to specify sender and target comp ids
-        header.append("56=Target^"); // Or adjust accordingly
-        header.append("34="  );
-        header.append(RqtNb);
+        header.append("^49="); // You need to specify sender and target comp ids
+        header.append(Sender); 
+        header.append("^56="); // Or adjust accordingly
+        header.append(Target);
+        header.append("^34="  );
+        header.append(RqtNbn);
         //header.append("^52=" + std::to_string(now->tm_hour) + ":" + std::to_string(now->tm_min) + ":" + std::to_string(now->tm_sec) + "^");
         header.append("^52=");
         header.append(GetTime());
@@ -78,7 +80,7 @@ std::string Trailler::TraillerMaker(std::string body) {
 class AddOrder: public LibData{
 public:
 
-    void addOrder(const std::string clOrdID, const std::string price, const std::string qty) {
+    void addOrder(const std::string clOrdID, const std::string price, const std::string qty, std::string Sender, std::string Target) {
         auto currentTime = std::chrono::system_clock::now();
         std::time_t currentTime_t = std::chrono::system_clock::to_time_t(currentTime);
         std::string orderData;
@@ -99,7 +101,7 @@ public:
         AddHeader header;
         Trailler trailler;
         //std::cout << "\n header \n" << header.HeaderMaker(orderData, "D", "1") << std::endl;
-        orderData.insert(0, header.HeaderMaker(orderData, "D", "1"));
+        orderData.insert(0, header.HeaderMaker(orderData, "D", "1", Sender, Target));
         //std::cout << "Order Data: " << orderData << std::endl;
         orderData.append(trailler.TraillerMaker(orderData));
         std::cout << "Order Data:\n" << orderData << std::endl;
@@ -111,5 +113,5 @@ int main(int a, char** av){
     std::string clOrdID = "1";
     std::string price = "100";
     std::string qty = "10";
-    addOrder.addOrder(clOrdID, price, qty);
+    addOrder.addOrder(clOrdID, price, qty, "SENDER", "TARGET");
 }
